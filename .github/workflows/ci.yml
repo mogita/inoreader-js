@@ -63,7 +63,7 @@ jobs:
           bun run build
 
       - name: Test built package compatibility
-        run: deno run --allow-read scripts/test-compatibility.js
+        run: deno run --allow-read --allow-run scripts/test-compatibility.mjs
 
   check-node:
     runs-on: ubuntu-latest
@@ -93,7 +93,7 @@ jobs:
           bun run build
 
       - name: Test built package compatibility
-        run: node scripts/test-compatibility.js
+        run: node scripts/test-compatibility.mjs
 
   build-artifacts:
     runs-on: ubuntu-latest
