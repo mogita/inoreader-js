@@ -1,0 +1,42 @@
+# Source files
+src/
+tests/
+scripts/
+
+# Development files
+.github/
+node_modules/
+*.log
+*.lock
+bun.lock
+
+# Configuration files
+tsconfig.json
+.gitignore
+.npmignore
+
+# Development scripts and tests
+*.test.ts
+*.spec.ts
+
+# Documentation (except README.md)
+docs/
+CHANGELOG.md
+
+# Build artifacts that shouldn't be published
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Only include:
+# - dist/ (built files)
+# - README.md (documentation)
+# - LICENSE (license file)
+# - package.json (automatically included)

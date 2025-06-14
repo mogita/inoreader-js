@@ -1,0 +1,58 @@
+{
+  "name": "inoreader-js",
+  "version": "1.0.0",
+  "description": "TypeScript library for Inoreader API with OAuth 2.0 and ClientLogin support",
+  "author": {
+    "name": "mogita",
+    "email": "me@mogita.com",
+    "url": "https://mogita.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mogita/inoreader-js.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "bun run build:clean && bun run build:esm && bun run build:cjs && bun run build:types",
+    "build:clean": "rm -rf dist",
+    "build:esm": "bun build src/index.ts --outdir dist/esm --format esm --target browser",
+    "build:cjs": "bun build src/index.ts --outdir dist/cjs --format cjs --target node",
+    "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
+    "lint": "tsc --noEmit",
+    "release:patch": "./scripts/release.sh patch",
+    "release:minor": "./scripts/release.sh minor",
+    "release:major": "./scripts/release.sh major"
+  },
+  "keywords": [
+    "inoreader",
+    "rss",
+    "feed",
+    "api",
+    "typescript",
+    "oauth",
+    "news"
+  ],
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
