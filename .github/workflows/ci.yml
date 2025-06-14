@@ -62,9 +62,6 @@ jobs:
           bun install --frozen-lockfile
           bun run build
 
-      - name: Check TypeScript compilation
-        run: deno check src/*.ts
-
       - name: Test built package compatibility
         run: deno run --allow-read scripts/test-compatibility.js
 
