@@ -127,6 +127,8 @@ try {
 
 ## Development
 
+This library is developed and tested with [Bun 1.2](https://bun.sh/).
+
 ```bash
 # Install dependencies
 bun install
