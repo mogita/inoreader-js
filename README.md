@@ -144,6 +144,21 @@ bun test
 bun run build
 ```
 
+## Release
+
+Run the `release.sh` script locally on the `main` branch to bump the version and create a tag. GitHub Actions will automatically build and publish to npm when a tag is pushed. Usage:
+
+```bash
+# Patch release (0.0.1 -> 0.0.2)
+./scripts/release.sh patch
+
+# Minor release (0.0.1 -> 0.1.0)
+./scripts/release.sh minor
+
+# Major release (0.0.1 -> 1.0.0)
+./scripts/release.sh major
+```
+
 ## Contributing
 
 Contributions are welcome! Should you find any issues or have any suggestions, kindly submit an issue or PR with the provided templates. Thank you!
