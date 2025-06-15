@@ -29,11 +29,12 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "bun run build:clean && bun run build:esm && bun run build:cjs && bun run build:types",
+    "build": "bun run build:clean && bun run build:esm && bun run build:cjs && bun run build:types && bun run build:package-json",
     "build:clean": "rm -rf dist",
     "build:esm": "bun build src/index.ts --outdir dist/esm --format esm --target browser",
     "build:cjs": "bun build src/index.ts --outdir dist/cjs --format cjs --target node",
     "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
+    "build:package-json": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
     "lint": "tsc --noEmit",
     "release:patch": "./scripts/release.sh patch",
     "release:minor": "./scripts/release.sh minor",

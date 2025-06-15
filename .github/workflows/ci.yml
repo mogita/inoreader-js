@@ -7,52 +7,12 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  test-node:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18, 20, 22, 24]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint code
-        run: npm run lint
-
-      - name: Run tests
-        run: npm test
-
-      - name: Build distribution
-        run: npm run build
-
-      - name: Check build artifacts
-        run: |
-          echo "Checking dist directory structure..."
-          ls -la dist/
-          echo "ESM build:"
-          ls -la dist/esm/
-          echo "CJS build:"
-          ls -la dist/cjs/
-          echo "Types:"
-          ls -la dist/types/
-
   test-bun:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        bun-version: ['1.0', '1.1', 'latest']
+        bun-version: ['1.2', 'latest']
 
     steps:
       - name: Checkout code
@@ -75,12 +35,13 @@ jobs:
       - name: Build distribution
         run: bun run build
 
-  test-deno:
+  check-deno:
     runs-on: ubuntu-latest
+    needs: [test-bun]  # Need build artifacts first
 
     strategy:
       matrix:
-        deno-version: ['1.40', '1.41', '1.42', '1.43', '1.44', '1.45', '1.46', 'v1.x']
+        deno-version: ['v1.x', 'v2.x', 'v2.1.x', 'v2.2.x', 'v2.3.x']
 
     steps:
       - name: Checkout code
@@ -91,31 +52,67 @@ jobs:
         with:
           deno-version: ${{ matrix.deno-version }}
 
-      - name: Run tests with Deno
-        run: deno test --allow-net --allow-read
+      - name: Setup Bun (for building)
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2'
 
-      - name: Check TypeScript compilation
-        run: deno check src/*.ts
+      - name: Install dependencies and build
+        run: |
+          bun install --frozen-lockfile
+          bun run build
 
-  build-artifacts:
+      - name: Test built package compatibility
+        run: deno run --allow-read --allow-run --allow-env scripts/test-compatibility-deno.mjs
+
+  check-node:
     runs-on: ubuntu-latest
-    needs: [test-node, test-bun, test-deno]
+    needs: [test-bun]  # Need build artifacts first
+
+    strategy:
+      matrix:
+        node-version: [18, 20, 22, 24]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup Bun (for building)
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2'
+
+      - name: Install dependencies and build
+        run: |
+          bun install --frozen-lockfile
+          bun run build
+
+      - name: Test built package compatibility
+        run: node scripts/test-compatibility.mjs
+
+  build-artifacts:
+    runs-on: ubuntu-latest
+    needs: [test-bun, check-deno, check-node]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2'
 
       - name: Install dependencies
-        run: npm ci
+        run: bun install --frozen-lockfile
 
       - name: Build distribution
-        run: npm run build
+        run: bun run build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4

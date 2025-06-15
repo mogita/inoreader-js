@@ -127,6 +127,8 @@ try {
 
 ## Development
 
+This library is developed and tested with [Bun 1.2](https://bun.sh/).
+
 ```bash
 # Install dependencies
 bun install
@@ -140,7 +142,7 @@ bun run build
 
 ## Contributing
 
-Contributions are welcome when you find any issues or have any suggestions. Kindly use the issue or PR templates when you do so. Thank you!
+Contributions are welcome! Should you find any issues or have any suggestions, kindly submit an issue or PR with the provided templates. Thank you!
 
 ## License
 
