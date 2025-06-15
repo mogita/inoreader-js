@@ -155,10 +155,14 @@ bun run release:minor   # 1.0.0 → 1.1.0
 bun run release:major   # 1.0.0 → 2.0.0
 ```
 
+**What happens:**
+
 1. Creates a release branch and pull request
 2. CI runs all tests and compatibility checks
-3. Merge the PR to trigger automated publishing
-4. Package is published to npm with GitHub release notes
+3. Merge the PR to trigger automated release process:
+   - Creates git tag
+   - Publishes to npm with provenance
+   - Creates GitHub release with auto-generated notes
 
 ## Contributing
 
