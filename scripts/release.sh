@@ -51,20 +51,44 @@ npm version $VERSION_TYPE --no-git-tag-version
 NEW_VERSION=$(node -p "require('./package.json').version")
 echo "📋 New version: $NEW_VERSION"
 
+# Create release branch
+RELEASE_BRANCH="release/v$NEW_VERSION"
+echo "🌿 Creating release branch: $RELEASE_BRANCH"
+git checkout -b "$RELEASE_BRANCH"
+
 # Commit version bump
 git add package.json
 git commit -m "chore: bump version to $NEW_VERSION"
 
-# Create and push tag
-echo "🏷️  Creating tag v$NEW_VERSION..."
-git tag "v$NEW_VERSION"
+# Push release branch
+echo "📤 Pushing release branch..."
+git push origin "$RELEASE_BRANCH"
 
-# Push changes and tag
-echo "📤 Pushing changes and tag..."
-git push origin main
-git push origin "v$NEW_VERSION"
+# Create pull request (requires gh CLI)
+if command -v gh &> /dev/null; then
+    echo "📋 Creating pull request..."
+    gh pr create \
+        --title "Release v$NEW_VERSION" \
+        --body "Automated release for version $NEW_VERSION
 
-echo "✅ Release process completed!"
-echo "🎉 Version $NEW_VERSION has been tagged and pushed."
-echo "📦 GitHub Actions will now build and publish to npm."
-echo "🔗 Check the progress at: https://github.com/mogita/inoreader-js/actions"
+## Changes
+- Bump version to $NEW_VERSION
+- Ready for release workflow
+
+This PR will trigger the release workflow once merged." \
+        --base main \
+        --head "$RELEASE_BRANCH"
+
+    echo "✅ Pull request created!"
+    echo "🔗 Please review and merge the PR to complete the release."
+    echo "🏷️  The tag will be created after merge."
+else
+    echo "⚠️  GitHub CLI not found. Please:"
+    echo "   1. Create a PR manually from branch: $RELEASE_BRANCH"
+    echo "   2. Merge the PR"
+    echo "   3. Create tag manually: git tag v$NEW_VERSION && git push origin v$NEW_VERSION"
+fi
+
+echo "✅ Release branch created!"
+echo "🎉 Version $NEW_VERSION is ready for release."
+echo "📦 Merge the PR to trigger the release workflow."

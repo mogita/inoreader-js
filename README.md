@@ -1,5 +1,7 @@
 # InoreaderJS
 
+![NPM Version](https://img.shields.io/npm/v/inoreader-js)
+
 A TypeScript library for the Inoreader API with OAuth 2.0 and ClientLogin support. This library is not affiliated with or maintained by Inoreader.
 
 ## Features
@@ -27,6 +29,8 @@ pnpm add inoreader-js
 # or with bun
 bun add inoreader-js
 ```
+
+For all historical releases, see [Releases](https://github.com/mogita/inoreader-js/releases).
 
 ## Quick Start
 
@@ -138,6 +142,21 @@ bun test
 
 # Build for production
 bun run build
+```
+
+## Release
+
+Run the `release.sh` script locally on the `main` branch to bump the version and create a tag. GitHub Actions will automatically build and publish to npm when a tag is pushed. Usage:
+
+```bash
+# Patch release (0.0.1 -> 0.0.2)
+./scripts/release.sh patch
+
+# Minor release (0.0.1 -> 0.1.0)
+./scripts/release.sh minor
+
+# Major release (0.0.1 -> 1.0.0)
+./scripts/release.sh major
 ```
 
 ## Contributing
