@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop, 'feature/*', 'feat/*', 'bugfix/*', 'hotfix/*', 'fix/*', 'refactor/*', 'release/*', 'test/*', 'docs/*', 'chore/*'] # All branches
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   test-bun:
@@ -37,7 +37,7 @@ jobs:
 
   check-deno:
     runs-on: ubuntu-latest
-    needs: [test-bun]  # Need build artifacts first
+    needs: [test-bun] # Need build artifacts first
 
     strategy:
       matrix:
@@ -67,7 +67,7 @@ jobs:
 
   check-node:
     runs-on: ubuntu-latest
-    needs: [test-bun]  # Need build artifacts first
+    needs: [test-bun] # Need build artifacts first
 
     strategy:
       matrix:

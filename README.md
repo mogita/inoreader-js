@@ -1,6 +1,6 @@
 # InoreaderJS
 
-![NPM Version](https://img.shields.io/npm/v/inoreader-js)
+<a href="https://www.npmjs.com/package/inoreader-js" target="_blank"><img alt="NPM Version" src="https://img.shields.io/npm/v/inoreader-js?style=flat"></a>
 
 A TypeScript library for the Inoreader API with OAuth 2.0 and ClientLogin support. This library is not affiliated with or maintained by Inoreader.
 
@@ -105,7 +105,7 @@ const client = new InoreaderClient()
 
 await client.clientLogin({
   email: 'your-email@example.com',
-  password: 'your-password'
+  password: 'your-password',
 })
 
 const userInfo = await client.getUserInfo()
@@ -113,7 +113,7 @@ const userInfo = await client.getUserInfo()
 
 ## Error Handling
 
-InoreaderJS 
+InoreaderJS
 
 ```typescript
 import { AuthenticationError, RateLimitError } from 'inoreader-js'
@@ -144,6 +144,18 @@ bun test
 bun run build
 ```
 
+### Branch Naming Convention
+
+Please use the following branch naming patterns:
+
+- `feature/*` | `feat/*`: New features
+- `bugfix/*` | `fix/*`: Bug fixes
+- `hotfix/*`: Critical fixes
+- `chore/*`: Maintenance tasks
+- `docs/*`: Documentation updates
+- `refactor/*`: Code improvements
+- `test/*`: Test improvements
+
 ## Release
 
 This project uses a PR-based release workflow:
@@ -155,10 +167,14 @@ bun run release:minor   # 1.0.0 → 1.1.0
 bun run release:major   # 1.0.0 → 2.0.0
 ```
 
+**What happens:**
+
 1. Creates a release branch and pull request
 2. CI runs all tests and compatibility checks
-3. Merge the PR to trigger automated publishing
-4. Package is published to npm with GitHub release notes
+3. Merge the PR to trigger automated release process:
+   - Creates git tag
+   - Publishes to npm with provenance
+   - Creates GitHub release with auto-generated notes
 
 ## Contributing
 

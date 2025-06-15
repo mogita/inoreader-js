@@ -1,12 +1,13 @@
 name: Release and Publish
 
 on:
-  push:
-    tags:
-      - 'v*'
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 jobs:
   release:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required for creating GitHub releases
@@ -15,6 +16,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Extract version from branch name
+        id: version
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#release/}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION"
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
@@ -44,6 +55,13 @@ jobs:
           echo "Package will include these files:"
           npm pack --dry-run
 
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.version.outputs.version }}"
+          git push origin "${{ steps.version.outputs.version }}"
+
       - name: Publish to npm
         run: npm publish --provenance --access public
         env:
@@ -52,18 +70,22 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: Release ${{ github.ref_name }}
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Release ${{ steps.version.outputs.version }}
+          generate_release_notes: true
           body: |
-            Release ${{ github.ref_name }}
-
-            ## Changes
-            See [CHANGELOG.md](./CHANGELOG.md) for details.
-
             ## Installation
             ```bash
-            npm install inoreader-js@${{ github.ref_name }}
+            npm install inoreader-js@${{ steps.version.outputs.version }}
             ```
+
+            ## What's Changed
+            <!-- Auto-generated release notes will appear below -->
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete release branch
+        run: |
+          git push origin --delete "${{ github.event.pull_request.head.ref }}"
