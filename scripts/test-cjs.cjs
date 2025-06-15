@@ -29,7 +29,7 @@ function testCJSRequire() {
 
     return true
   } catch (error) {
-    console.error('❌ CJS require failed:', error)
+    console.error('❌ CJS require failed:', error.message)
     return false
   }
 }
