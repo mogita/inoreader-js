@@ -1,5 +1,7 @@
 # InoreaderJS
 
+![NPM Version](https://img.shields.io/npm/v/inoreader-js)
+
 A TypeScript library for the Inoreader API with OAuth 2.0 and ClientLogin support. This library is not affiliated with or maintained by Inoreader.
 
 ## Features
@@ -27,6 +29,8 @@ pnpm add inoreader-js
 # or with bun
 bun add inoreader-js
 ```
+
+For all historical releases, see [Releases](https://github.com/mogita/inoreader-js/releases).
 
 ## Quick Start
 
