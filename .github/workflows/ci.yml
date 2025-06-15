@@ -2,8 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ['**']  # All branches
-    tags-ignore: ['**']  # Exclude all tags
+    branches: [main, develop, 'feature/*', 'feat/*', 'bugfix/*', 'hotfix/*', 'fix/*', 'release/*', 'test/*', 'docs/*', 'chore/*'] # All branches
   pull_request:
     branches: [main, develop]
 

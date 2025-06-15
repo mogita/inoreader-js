@@ -144,6 +144,18 @@ bun test
 bun run build
 ```
 
+### Branch Naming Convention
+
+Please use the following branch naming patterns:
+
+- `feature/*` | `feat/*`: New features
+- `bugfix/*` | `fix/*`: Bug fixes
+- `hotfix/*`: Critical fixes
+- `chore/*`: Maintenance tasks
+- `docs/*`: Documentation updates
+- `refactor/*`: Code improvements
+- `test/*`: Test improvements
+
 ## Release
 
 This project uses a PR-based release workflow:
