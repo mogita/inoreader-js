@@ -4,6 +4,7 @@
  * TypeScript definitions compatibility test
  */
 
+import process from 'node:process' // needed for Deno v1
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
