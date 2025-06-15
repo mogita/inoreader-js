@@ -1,6 +1,6 @@
 # InoreaderJS
 
-![NPM Version](https://img.shields.io/npm/v/inoreader-js)
+<a href="https://www.npmjs.com/package/inoreader-js" target="_blank"><img alt="NPM Version" src="https://img.shields.io/npm/v/inoreader-js?style=flat"></a>
 
 A TypeScript library for the Inoreader API with OAuth 2.0 and ClientLogin support. This library is not affiliated with or maintained by Inoreader.
 
@@ -105,7 +105,7 @@ const client = new InoreaderClient()
 
 await client.clientLogin({
   email: 'your-email@example.com',
-  password: 'your-password'
+  password: 'your-password',
 })
 
 const userInfo = await client.getUserInfo()
@@ -113,7 +113,7 @@ const userInfo = await client.getUserInfo()
 
 ## Error Handling
 
-InoreaderJS 
+InoreaderJS
 
 ```typescript
 import { AuthenticationError, RateLimitError } from 'inoreader-js'

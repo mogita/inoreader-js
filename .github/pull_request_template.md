@@ -1,29 +1,39 @@
 ## Description
-Brief description of the changes in this PR.
+
+Please provide a summary of the changes and their purpose. Explain any relevant context, including the motivation behind the change.
+
+Handles #(issue)
+
+---
 
 ## Type of Change
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Documentation update
-- [ ] Performance improvement
-- [ ] Code refactoring
 
-## Testing
-- [ ] Tests pass locally with my changes
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Breaking change
+- [ ] Documentation update
+- [ ] Refactor
+- [ ] Maintenance
+- [ ] Other (please describe):
+
+---
 
 ## Checklist
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
-- [ ] My changes generate no new warnings
-- [ ] Any dependent changes have been merged and published in downstream modules
 
-## Breaking Changes
-If this is a breaking change, please describe the impact and migration path for existing users:
+- [ ] Code has been linted with `bun run lint`
+- [ ] Code has been formatted with `bun run format`
+- [ ] Documentation has been updated (if applicable)
+- [ ] All tests pass in CI/CD for Node.js, Bun, and Deno
+- [ ] I have merged the latest changes from the main branch
 
-## Additional Notes
-Any additional information that reviewers should know.
+---
+
+## Additional Context
+
+Add any other information reviewers may need to understand your PR, such as related issues, discussion links, or screenshots.
+
+---
+
+## Reviewer Notes
+
+(Optional) Are there specific areas you want feedback on, or questions for the reviewers?

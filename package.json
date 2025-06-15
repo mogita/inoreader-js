@@ -36,6 +36,7 @@
     "build:types": "tsc --emitDeclarationOnly --outDir dist/types",
     "build:package-json": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
     "lint": "tsc --noEmit",
+    "format": "prettier --write .",
     "release:patch": "./scripts/release.sh patch",
     "release:minor": "./scripts/release.sh minor",
     "release:major": "./scripts/release.sh major"

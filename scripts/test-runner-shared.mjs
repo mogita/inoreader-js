@@ -15,18 +15,18 @@
  */
 export async function runTestSuite(config) {
   const { suiteName, successMessage, failureMessage, tests, runTest, exit } = config
-  
+
   console.log(`🧪 Running ${suiteName}...`)
-  
+
   const results = []
-  
+
   for (const test of tests) {
     const result = await runTest(test.file, test.name)
     results.push(result)
   }
-  
-  const allPassed = results.every(result => result)
-  
+
+  const allPassed = results.every((result) => result)
+
   console.log('\n' + '='.repeat(50))
   if (allPassed) {
     console.log(successMessage)

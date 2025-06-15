@@ -42,4 +42,4 @@ changelog:
         - deps
     - title: Other Changes
       labels:
-        - "*"
+        - '*'
