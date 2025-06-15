@@ -41,7 +41,7 @@ jobs:
 
     strategy:
       matrix:
-        deno-version: ['1.40', '1.42', '1.44', '1.46', 'v1.x']
+        deno-version: ['v1.x', 'v2.x', 'v2.1.x', 'v2.2.x', 'v2.3.x']
 
     steps:
       - name: Checkout code
@@ -63,7 +63,7 @@ jobs:
           bun run build
 
       - name: Test built package compatibility
-        run: deno run --allow-read --allow-run scripts/test-compatibility.mjs
+        run: deno run --allow-read --allow-run --allow-env scripts/test-compatibility-deno.mjs
 
   check-node:
     runs-on: ubuntu-latest
