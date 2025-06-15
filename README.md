@@ -146,18 +146,19 @@ bun run build
 
 ## Release
 
-Run the `release.sh` script locally on the `main` branch to bump the version and create a tag. GitHub Actions will automatically build and publish to npm when a tag is pushed. Usage:
+This project uses a PR-based release workflow:
 
 ```bash
-# Patch release (0.0.1 -> 0.0.2)
-./scripts/release.sh patch
-
-# Minor release (0.0.1 -> 0.1.0)
-./scripts/release.sh minor
-
-# Major release (0.0.1 -> 1.0.0)
-./scripts/release.sh major
+# Create a release (patch/minor/major)
+bun run release:patch   # 1.0.0 → 1.0.1
+bun run release:minor   # 1.0.0 → 1.1.0
+bun run release:major   # 1.0.0 → 2.0.0
 ```
+
+1. Creates a release branch and pull request
+2. CI runs all tests and compatibility checks
+3. Merge the PR to trigger automated publishing
+4. Package is published to npm with GitHub release notes
 
 ## Contributing
 
