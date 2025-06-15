@@ -53,16 +53,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           name: Release ${{ github.ref_name }}
+          generate_release_notes: true
           body: |
-            Release ${{ github.ref_name }}
-
-            ## Changes
-            See [CHANGELOG.md](./CHANGELOG.md) for details.
-
             ## Installation
             ```bash
             npm install inoreader-js@${{ github.ref_name }}
             ```
+
+            ## What's Changed
+            <!-- Auto-generated release notes will appear below -->
           draft: false
           prerelease: false
         env:

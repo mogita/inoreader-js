@@ -67,26 +67,45 @@ git push origin "$RELEASE_BRANCH"
 # Create pull request (requires gh CLI)
 if command -v gh &> /dev/null; then
     echo "📋 Creating pull request..."
+
+    # Generate PR body with recent commits for better release notes
+    LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+    if [ -n "$LAST_TAG" ]; then
+        COMMIT_RANGE="$LAST_TAG..HEAD"
+        echo "📝 Generating changelog since $LAST_TAG..."
+    else
+        COMMIT_RANGE="HEAD~10..HEAD"
+        echo "📝 Generating changelog from recent commits..."
+    fi
+
     gh pr create \
-        --title "Release v$NEW_VERSION" \
-        --body "Automated release for version $NEW_VERSION
+        --title "🚀 Release v$NEW_VERSION" \
+        --body "## Release v$NEW_VERSION
 
-## Changes
-- Bump version to $NEW_VERSION
-- Ready for release workflow
+### 📦 Package Changes
+- Bump version from $(git describe --tags --abbrev=0 2>/dev/null || echo 'initial') to v$NEW_VERSION
 
-This PR will trigger the release workflow once merged." \
+### 🔄 Automated Release Process
+This PR will trigger the automated release workflow once merged:
+- ✅ Run full test suite across Node.js, Bun, and Deno
+- ✅ Build and publish to npm with provenance
+- ✅ Create GitHub release with auto-generated notes
+
+### 📋 Recent Changes
+$(git log --oneline --no-merges $COMMIT_RANGE 2>/dev/null | head -10 | sed 's/^/- /' || echo '- Initial release')" \
         --base main \
-        --head "$RELEASE_BRANCH"
+        --head "$RELEASE_BRANCH" \
+        --label "release"
 
-    echo "✅ Pull request created!"
+    echo "✅ Pull request created with release label!"
     echo "🔗 Please review and merge the PR to complete the release."
-    echo "🏷️  The tag will be created after merge."
+    echo "🏷️  The tag and GitHub release will be created automatically after merge."
 else
     echo "⚠️  GitHub CLI not found. Please:"
     echo "   1. Create a PR manually from branch: $RELEASE_BRANCH"
-    echo "   2. Merge the PR"
-    echo "   3. Create tag manually: git tag v$NEW_VERSION && git push origin v$NEW_VERSION"
+    echo "   2. Add 'release' label to the PR"
+    echo "   3. Merge the PR"
+    echo "   4. Tag and release will be created automatically"
 fi
 
 echo "✅ Release branch created!"
