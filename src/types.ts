@@ -200,7 +200,7 @@ export interface EditSubscriptionParams {
 }
 
 export interface EditTagParams {
-  s: string // Stream ID
+  i: string | string[] // Item ID(s)
   a?: string // Add tag
   r?: string // Remove tag
   ac?: string // Action

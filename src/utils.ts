@@ -39,7 +39,14 @@ export function buildUrl(baseUrl: string, path: string, params?: Record<string, 
   if (params) {
     for (const [key, value] of Object.entries(params)) {
       if (value !== undefined && value !== null) {
-        url.searchParams.append(key, String(value))
+        if (Array.isArray(value)) {
+          // Handle array values by appending each item
+          for (const item of value) {
+            url.searchParams.append(key, String(item))
+          }
+        } else {
+          url.searchParams.append(key, String(value))
+        }
       }
     }
   }
