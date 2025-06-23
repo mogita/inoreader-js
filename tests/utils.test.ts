@@ -66,6 +66,21 @@ describe('Utils', () => {
       expect(url).toBe('https://example.com/api/test?param=value')
     })
 
+    it('should handle empty parameters', () => {
+      const url = buildUrl('https://example.com', '/api/test', {})
+      expect(url).toBe('https://example.com/api/test')
+    })
+
+    it('should handle undefined parameters', () => {
+      const url = buildUrl('https://example.com', '/api/test', undefined)
+      expect(url).toBe('https://example.com/api/test')
+    })
+
+    it('should handle array parameters', () => {
+      const url = buildUrl('https://example.com', '/api/test', { id: ['1', '2', '3'] })
+      expect(url).toBe('https://example.com/api/test?id=1&id=2&id=3')
+    })
+
     it('should build URL without parameters', () => {
       const url = buildUrl('https://example.com', '/api/test')
       expect(url).toBe('https://example.com/api/test')
