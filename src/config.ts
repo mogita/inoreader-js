@@ -60,7 +60,6 @@ export const RATE_LIMITS = {
 export const STREAM_PARAMS = {
   // Get latest articles
   LATEST: {
-    r: 'n' as const,
     n: 20,
   },
 
