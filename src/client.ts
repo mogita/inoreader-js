@@ -188,18 +188,16 @@ export class InoreaderClient {
    * Get stream preferences
    */
   async getStreamPreferences(streamId: string): Promise<PreferenceList> {
-    const encodedStreamId = encodeStreamId(streamId)
-    const url = `/reader/api/0/preference/stream/list/${encodedStreamId}`
-    return this.makeRequest<PreferenceList>(url)
+    const url = `/reader/api/0/preference/stream/list`
+    return this.makeRequest<PreferenceList>(url, 'GET', { s: streamId })
   }
 
   /**
    * Set stream preference
    */
   async setStreamPreference(streamId: string, key: string, value: string): Promise<void> {
-    const encodedStreamId = encodeStreamId(streamId)
-    const url = `/reader/api/0/preference/stream/set/${encodedStreamId}`
-    await this.makeRequest(url, 'POST', { k: key, v: value })
+    const url = `/reader/api/0/preference/stream/set`
+    await this.makeRequest(url, 'POST', { s: streamId, k: key, v: value })
   }
 
   /**
