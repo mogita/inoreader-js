@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'bun:test'
+import { describe, it, expect, beforeEach, mock, afterEach } from 'bun:test'
 import { InoreaderClient, AuthenticationError, ValidationError, TokenError } from '../src/index'
 
 describe('InoreaderClient', () => {
@@ -101,5 +101,59 @@ describe('InoreaderClient with mock authentication', () => {
     it('should be callable with valid stream ID', () => {
       expect(typeof client.getStreamContents).toBe('function')
     })
+  })
+})
+
+describe('getStreamItemIds URL format', () => {
+  let client: InoreaderClient
+  let capturedUrl: string | undefined
+  let originalFetch: typeof globalThis.fetch
+
+  beforeEach(() => {
+    client = new InoreaderClient({
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+      redirectUri: 'https://example.com/callback',
+    })
+    client.setCredentials({
+      accessToken: 'mock-access-token',
+      refreshToken: 'mock-refresh-token',
+      expiresAt: Date.now() + 3600000,
+      scope: 'read write',
+    })
+    capturedUrl = undefined
+    originalFetch = globalThis.fetch
+    globalThis.fetch = mock(async (url: string | URL | Request) => {
+      capturedUrl = url.toString()
+      return new Response(JSON.stringify({ itemRefs: [] }), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    }) as unknown as typeof globalThis.fetch
+  })
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch
+  })
+
+  it('should pass stream ID as s query param, not as a path segment', async () => {
+    const streamId = 'user/-/state/com.google/reading-list'
+    await client.getStreamItemIds(streamId)
+
+    expect(capturedUrl).toBeDefined()
+    const url = new URL(capturedUrl!)
+    expect(url.pathname).toBe('/reader/api/0/stream/items/ids')
+    expect(url.searchParams.get('s')).toBe(streamId)
+    expect(url.pathname).not.toContain(streamId)
+  })
+
+  it('should merge additional params alongside s', async () => {
+    const streamId = 'user/-/state/com.google/reading-list'
+    await client.getStreamItemIds(streamId, { n: 20 } as any)
+
+    expect(capturedUrl).toBeDefined()
+    const url = new URL(capturedUrl!)
+    expect(url.searchParams.get('s')).toBe(streamId)
+    expect(url.searchParams.get('n')).toBe('20')
   })
 })

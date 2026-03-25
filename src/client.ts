@@ -172,9 +172,10 @@ export class InoreaderClient {
    * Get stream item IDs
    */
   async getStreamItemIds(streamId: string, params?: StreamParams): Promise<{ itemRefs: Array<{ id: string }> }> {
-    const encodedStreamId = encodeStreamId(streamId)
-    const url = `/reader/api/0/stream/items/ids/${encodedStreamId}`
-    return this.makeRequest<{ itemRefs: Array<{ id: string }> }>(url, 'GET', params)
+    return this.makeRequest<{ itemRefs: Array<{ id: string }> }>('/reader/api/0/stream/items/ids', 'GET', {
+      s: streamId,
+      ...params,
+    })
   }
 
   /**
