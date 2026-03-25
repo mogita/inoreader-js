@@ -8,6 +8,7 @@ import type {
   StreamContents,
   UnreadCount,
   PreferenceList,
+  StreamPreferenceList,
   StreamParams,
   AddSubscriptionParams,
   EditSubscriptionParams,
@@ -187,10 +188,10 @@ export class InoreaderClient {
   /**
    * Get stream preferences
    */
-  async getStreamPreferences(streamId: string): Promise<PreferenceList> {
+  async getStreamPreferences(streamId: string): Promise<StreamPreferenceList> {
     const encodedStreamId = encodeStreamId(streamId)
     const url = `/reader/api/0/preference/stream/list/${encodedStreamId}`
-    return this.makeRequest<PreferenceList>(url)
+    return this.makeRequest<StreamPreferenceList>(url)
   }
 
   /**

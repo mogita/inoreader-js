@@ -184,6 +184,10 @@ export interface PreferenceList {
   prefs: Preference[]
 }
 
+export interface StreamPreferenceList {
+  streamprefs: Record<string, Preference[]>
+}
+
 // API method parameters
 export interface AddSubscriptionParams {
   s: string // Stream URL
