@@ -276,15 +276,24 @@ export class InoreaderClient {
       headers[key] = value
     }
 
-    url = buildUrl(this.config.baseUrl!, path, params)
+    let body: string | undefined
+    if (method === 'POST') {
+      url = buildUrl(this.config.baseUrl!, path)
+      body = encodeFormData(params ?? {})
+    } else {
+      url = buildUrl(this.config.baseUrl!, path, params)
+    }
 
     if (this.debug) {
       console.log(`[debug] ${method}: ${url}`)
       console.log('[debug] headers:', headers)
+      if (method === 'POST') {
+        console.log('[debug] body:', body)
+      }
     }
 
     try {
-      const response = await fetch(url, { method, headers })
+      const response = await fetch(url, { method, headers, body })
 
       // Extract rate limit information
       this.lastRateLimitInfo = extractRateLimitInfo(response.headers)
