@@ -193,7 +193,8 @@ export interface AddSubscriptionParams {
 
 export interface EditSubscriptionParams {
   s: string // Stream ID
-  ac: 'subscribe' | 'unsubscribe' | 'edit'
+  /** Action to perform: 'follow' to subscribe, 'unfollow' to unsubscribe, 'edit' to update title/tags */
+  ac: 'follow' | 'unfollow' | 'edit'
   t?: string // Title
   a?: string // Add tag
   r?: string // Remove tag
