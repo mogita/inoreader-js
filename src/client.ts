@@ -13,6 +13,7 @@ import type {
   EditSubscriptionParams,
   EditTagParams,
   MarkAllAsReadParams,
+  GetTagsParams,
   RateLimitInfo,
 } from './types'
 import { InoreaderAuth } from './auth'
@@ -148,8 +149,8 @@ export class InoreaderClient {
   /**
    * Get tag list
    */
-  async getTags(): Promise<TagList> {
-    return this.makeRequest<TagList>('/reader/api/0/tag/list')
+  async getTags(params?: GetTagsParams): Promise<TagList> {
+    return this.makeRequest<TagList>('/reader/api/0/tag/list', 'GET', params)
   }
 
   /**
