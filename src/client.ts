@@ -259,8 +259,6 @@ export class InoreaderClient {
   ): Promise<T> {
     await this.auth.ensureTokenRefreshed()
 
-    let url = `${this.config.baseUrl}${path}`
-
     const headers: Record<string, string> = {
       'Content-Type': 'application/x-www-form-urlencoded',
       Accept: 'application/json',
@@ -276,7 +274,7 @@ export class InoreaderClient {
       headers[key] = value
     }
 
-    url = buildUrl(this.config.baseUrl!, path, params)
+    const url = buildUrl(this.config.baseUrl!, path, params)
 
     if (this.debug) {
       console.log(`[debug] ${method}: ${url}`)
