@@ -1,4 +1,5 @@
 import type { InoreaderConfig } from './types'
+import pkg from '../package.json'
 
 /**
  * Configuration presets and helpers
@@ -9,7 +10,7 @@ import type { InoreaderConfig } from './types'
  */
 export const DEFAULT_CONFIG: Partial<InoreaderConfig> = {
   baseUrl: 'https://www.inoreader.com',
-  userAgent: 'InoreaderJS/1.0.0',
+  userAgent: `InoreaderJS/${pkg.version}`,
 }
 
 /**
@@ -17,7 +18,7 @@ export const DEFAULT_CONFIG: Partial<InoreaderConfig> = {
  */
 export const DEVELOPMENT_CONFIG: Partial<InoreaderConfig> = {
   ...DEFAULT_CONFIG,
-  userAgent: 'InoreaderJS-Dev/1.0.0',
+  userAgent: `InoreaderJS-Dev/${pkg.version}`,
 }
 
 /**
