@@ -268,7 +268,11 @@ export class InoreaderClient {
       'User-Agent': this.config.userAgent || DEFAULT_CONFIG.userAgent!,
       AppId: this.config.clientId || '',
       AppKey: this.config.clientSecret || '',
-      Authorization: this.auth.getAuthorizationHeader() || '',
+    }
+
+    const authHeader = this.auth.getAuthorizationHeader()
+    if (authHeader) {
+      headers['Authorization'] = authHeader
     }
 
     // Override with custom headers
