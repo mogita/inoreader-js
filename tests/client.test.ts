@@ -149,7 +149,7 @@ describe('getStreamItemIds URL format', () => {
 
   it('should merge additional params alongside s', async () => {
     const streamId = 'user/-/state/com.google/reading-list'
-    await client.getStreamItemIds(streamId, { n: 20 } as any)
+    await client.getStreamItemIds(streamId, { n: 20 })
 
     expect(capturedUrl).toBeDefined()
     const url = new URL(capturedUrl!)
