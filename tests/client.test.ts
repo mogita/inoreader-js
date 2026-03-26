@@ -108,8 +108,11 @@ describe('makeRequest routing', () => {
   let client: InoreaderClient
   let capturedRequests: Array<{ url: string; init: RequestInit }>
 
+  let originalFetch: typeof globalThis.fetch
+
   beforeEach(() => {
     capturedRequests = []
+    originalFetch = globalThis.fetch
     client = new InoreaderClient({
       clientId: 'test-client-id',
       clientSecret: 'test-client-secret',
@@ -130,7 +133,7 @@ describe('makeRequest routing', () => {
   })
 
   afterEach(() => {
-    delete (globalThis as any).fetch
+    globalThis.fetch = originalFetch
   })
 
   it('GET appends params to URL and sends no body', async () => {
