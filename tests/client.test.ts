@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test'
-import { InoreaderClient, AuthenticationError, ValidationError, TokenError } from '../src/index'
+import { InoreaderClient } from '../src/index'
 
 describe('InoreaderClient', () => {
   let client: InoreaderClient
