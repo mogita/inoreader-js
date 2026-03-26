@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import type { UnreadCount } from '../src/types'
+import type { UnreadCount } from '../src/index'
 
 describe('UnreadCount', () => {
   it('should accept a string for max', () => {
