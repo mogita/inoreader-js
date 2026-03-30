@@ -23,8 +23,7 @@
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false,
-    "resolveJsonModule": true
+    "noPropertyAccessFromIndexSignature": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests", "**/*.test.ts", "**/*.spec.ts"]
