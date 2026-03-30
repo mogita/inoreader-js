@@ -102,6 +102,45 @@ describe('InoreaderClient with mock authentication', () => {
       expect(typeof client.getStreamContents).toBe('function')
     })
   })
+
+  describe('getStreamItemIds', () => {
+    it('should include output=json in request URL by default', async () => {
+      let capturedUrl: string | undefined
+      const originalFetch = globalThis.fetch
+      globalThis.fetch = async (input: RequestInfo | URL, _init?: RequestInit) => {
+        capturedUrl = input.toString()
+        return new Response(JSON.stringify({ itemRefs: [] }), { status: 200 })
+      }
+
+      try {
+        await client.getStreamItemIds('user/-/state/com.google/reading-list')
+      } finally {
+        globalThis.fetch = originalFetch
+      }
+
+      expect(capturedUrl).toBeDefined()
+      expect(capturedUrl).toContain('output=json')
+    })
+
+    it('should allow caller to override output param', async () => {
+      let capturedUrl: string | undefined
+      const originalFetch = globalThis.fetch
+      globalThis.fetch = async (input: RequestInfo | URL, _init?: RequestInit) => {
+        capturedUrl = input.toString()
+        return new Response(JSON.stringify({ itemRefs: [] }), { status: 200 })
+      }
+
+      try {
+        await client.getStreamItemIds('user/-/state/com.google/reading-list', { output: 'xml' as any })
+      } finally {
+        globalThis.fetch = originalFetch
+      }
+
+      expect(capturedUrl).toBeDefined()
+      expect(capturedUrl).toContain('output=xml')
+      expect(capturedUrl).not.toContain('output=json')
+    })
+  })
 })
 
 describe('makeRequest routing', () => {
