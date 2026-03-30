@@ -186,9 +186,8 @@ export interface PreferenceList {
 
 // API method parameters
 export interface AddSubscriptionParams {
-  s: string // Stream URL
-  ac?: string // Action (default: subscribe)
-  t?: string // Title
+  /** Feed URL or stream ID to subscribe to */
+  quickadd: string
 }
 
 export interface EditSubscriptionParams {
