@@ -147,10 +147,18 @@ export function delay(ms: number): Promise<void> {
 /**
  * Converts form data to URL-encoded string
  */
-export function encodeFormData(data: Record<string, string>): string {
+export function encodeFormData(data: Record<string, any>): string {
   const params = new URLSearchParams()
   for (const [key, value] of Object.entries(data)) {
-    params.append(key, value)
+    if (value !== undefined && value !== null) {
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          params.append(key, String(item))
+        }
+      } else {
+        params.append(key, String(value))
+      }
+    }
   }
   return params.toString()
 }
