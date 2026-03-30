@@ -46,6 +46,7 @@ export type {
   StreamParams,
   Preference,
   PreferenceList,
+  StreamPreferenceList,
   AddSubscriptionParams,
   EditSubscriptionParams,
   EditTagParams,
