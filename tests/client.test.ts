@@ -305,3 +305,65 @@ describe('Authorization header behavior', () => {
     expect(capturedHeaders?.get('Authorization')).toBe('Bearer mock-access-token')
   })
 })
+
+describe('stream preference URL format', () => {
+  let client: InoreaderClient
+  let capturedUrl: string
+  let capturedBody: string | undefined
+  let originalFetch: typeof globalThis.fetch
+
+  beforeEach(() => {
+    client = new InoreaderClient({
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+      redirectUri: 'https://example.com/callback',
+    })
+
+    client.setCredentials({
+      accessToken: 'mock-access-token',
+      refreshToken: 'mock-refresh-token',
+      expiresAt: Date.now() + 3600000,
+      scope: 'read write',
+    })
+
+    originalFetch = (globalThis as any).fetch
+    ;(globalThis as any).fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+      capturedUrl = typeof input === 'string' ? input : input instanceof URL ? input.toString() : (input as Request).url
+      capturedBody = init?.body as string | undefined
+      return new Response(JSON.stringify({}), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      })
+    }
+  })
+
+  afterEach(() => {
+    ;(globalThis as any).fetch = originalFetch
+  })
+
+  describe('getStreamPreferences', () => {
+    it('should send s as a query parameter, not a path segment', async () => {
+      const streamId = 'feed/https://example.com/rss'
+      await client.getStreamPreferences(streamId)
+
+      expect(capturedUrl).toContain('/reader/api/0/preference/stream/list')
+      const url = new URL(capturedUrl)
+      expect(url.searchParams.get('s')).toBe(streamId)
+      expect(capturedUrl).not.toContain(`/preference/stream/list/${encodeURIComponent(streamId)}`)
+    })
+  })
+
+  describe('setStreamPreference', () => {
+    it('should send s, k, v in the POST body, not as a path segment', async () => {
+      const streamId = 'feed/https://example.com/rss'
+      await client.setStreamPreference(streamId, 'sort-id', '0')
+
+      expect(capturedUrl).toContain('/reader/api/0/preference/stream/set')
+      expect(capturedUrl).not.toContain(`/preference/stream/set/${encodeURIComponent(streamId)}`)
+      const bodyParams = new URLSearchParams(capturedBody)
+      expect(bodyParams.get('s')).toBe(streamId)
+      expect(bodyParams.get('k')).toBe('sort-id')
+      expect(bodyParams.get('v')).toBe('0')
+    })
+  })
+})
