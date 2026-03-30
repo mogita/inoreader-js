@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'bun:test'
-import type { AddSubscriptionParams } from '../src/types'
+import type { AddSubscriptionParams, EditSubscriptionParams } from '../src/types'
 
 describe('AddSubscriptionParams', () => {
   it('requires quickadd field', () => {
@@ -14,5 +14,22 @@ describe('AddSubscriptionParams', () => {
       quickadd: 'feed/https://example.com/feed.xml',
     }
     expect(params.quickadd).toBe('feed/https://example.com/feed.xml')
+  })
+})
+
+describe('EditSubscriptionParams', () => {
+  it('accepts follow as a valid ac value', () => {
+    const params: EditSubscriptionParams = { s: 'feed/https://example.com/rss', ac: 'follow' }
+    expect(params.ac).toBe('follow')
+  })
+
+  it('accepts unfollow as a valid ac value', () => {
+    const params: EditSubscriptionParams = { s: 'feed/https://example.com/rss', ac: 'unfollow' }
+    expect(params.ac).toBe('unfollow')
+  })
+
+  it('accepts edit as a valid ac value', () => {
+    const params: EditSubscriptionParams = { s: 'feed/https://example.com/rss', ac: 'edit', t: 'New Title' }
+    expect(params.ac).toBe('edit')
   })
 })
