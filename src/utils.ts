@@ -15,7 +15,18 @@ export function decodeStreamId(encodedStreamId: string): string {
 }
 
 /**
- * Builds a query string from parameters
+ * Builds a query string from parameters, returning a leading-`?` string or
+ * an empty string when there are no serialisable entries.
+ *
+ * This is a **public API** utility intentionally distinct from the internal
+ * `buildUrl` helper. Key differences:
+ *  - Returns only the query-string portion (e.g. `?foo=bar`), not a full URL.
+ *  - Array values are coerced via `String()` (producing a single
+ *    comma-joined key), whereas `buildUrl` expands arrays into repeated keys.
+ *  - `undefined` and `null` values are omitted.
+ *
+ * @param params - Flat key/value map; values are serialised with `String()`.
+ * @returns A query string prefixed with `?`, or `''` for an empty/null-only map.
  */
 export function buildQueryString(params: Record<string, any>): string {
   const searchParams = new URLSearchParams()
@@ -136,10 +147,18 @@ export function delay(ms: number): Promise<void> {
 /**
  * Converts form data to URL-encoded string
  */
-export function encodeFormData(data: Record<string, string>): string {
+export function encodeFormData(data: Record<string, any>): string {
   const params = new URLSearchParams()
   for (const [key, value] of Object.entries(data)) {
-    params.append(key, value)
+    if (value !== undefined && value !== null) {
+      if (Array.isArray(value)) {
+        for (const item of value) {
+          params.append(key, String(item))
+        }
+      } else {
+        params.append(key, String(value))
+      }
+    }
   }
   return params.toString()
 }

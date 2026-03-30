@@ -46,10 +46,12 @@ export type {
   StreamParams,
   Preference,
   PreferenceList,
+  StreamPreferenceList,
   AddSubscriptionParams,
   EditSubscriptionParams,
   EditTagParams,
   MarkAllAsReadParams,
+  GetTagsParams,
   InoreaderError as InoreaderErrorType,
 } from './types'
 
