@@ -259,3 +259,49 @@ describe('getStreamItemIds URL format', () => {
     expect(url.searchParams.get('n')).toBe('20')
   })
 })
+
+describe('Authorization header behavior', () => {
+  let capturedHeaders: Headers | undefined
+  let originalFetch: typeof globalThis.fetch
+
+  beforeEach(() => {
+    capturedHeaders = undefined
+    originalFetch = globalThis.fetch
+    globalThis.fetch = mock(async (_input: RequestInfo | URL, init?: RequestInit) => {
+      capturedHeaders = new Headers(init?.headers as HeadersInit)
+      return new Response(JSON.stringify({ userId: 'test' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }) as unknown as typeof globalThis.fetch
+  })
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch
+  })
+
+  it('should omit Authorization header when no credentials are set', async () => {
+    const client = new InoreaderClient({
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    })
+    await client.getUserInfo()
+    expect(capturedHeaders?.has('Authorization')).toBe(false)
+  })
+
+  it('should include Authorization header when credentials are set', async () => {
+    const client = new InoreaderClient({
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    })
+    client.setCredentials({
+      accessToken: 'mock-access-token',
+      refreshToken: 'mock-refresh-token',
+      expiresAt: Date.now() + 3600000,
+      scope: 'read write',
+    })
+    await client.getUserInfo()
+    expect(capturedHeaders?.has('Authorization')).toBe(true)
+    expect(capturedHeaders?.get('Authorization')).toBe('Bearer mock-access-token')
+  })
+})
