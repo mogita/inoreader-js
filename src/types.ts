@@ -18,6 +18,7 @@ export interface AuthCredentials {
   refreshToken?: string
   expiresAt?: number
   scope?: string
+  authType?: 'bearer' | 'googlelogin'
 }
 
 export interface ClientLoginCredentials {
