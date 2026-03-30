@@ -18,6 +18,7 @@ export interface AuthCredentials {
   refreshToken?: string
   expiresAt?: number
   scope?: string
+  authType?: 'bearer' | 'googlelogin'
 }
 
 export interface ClientLoginCredentials {
@@ -87,6 +88,13 @@ export interface Tag {
   id: string
   sortid: string
   type?: string
+  unread_count?: number
+  unseen_count?: number
+}
+
+export interface GetTagsParams {
+  types?: 0 | 1
+  counts?: 0 | 1
 }
 
 export interface TagList {
@@ -153,7 +161,8 @@ export interface Annotation {
 
 // Unread count types
 export interface UnreadCount {
-  max: number
+  /** The API returns max as a string (e.g. "1000"). Display code should append '+' when a `count` is greater than or equal to the numeric value of `max`. */
+  max: string
   unreadcounts: Array<{
     id: string
     count: number
@@ -164,7 +173,7 @@ export interface UnreadCount {
 // Stream parameters
 export interface StreamParams {
   n?: number // Number of items (default 20, max 100)
-  r?: 'o' | 'n' // Order: 'o' for oldest first, 'n' for newest first
+  r?: 'o' // Sort order: 'o' for oldest-first; omit for newest-first (default)
   ot?: number // Start time (unix timestamp)
   xt?: string // Exclude target
   it?: string // Include target
@@ -184,16 +193,20 @@ export interface PreferenceList {
   prefs: Preference[]
 }
 
+export interface StreamPreferenceList {
+  streamprefs: Record<string, Preference[]>
+}
+
 // API method parameters
 export interface AddSubscriptionParams {
-  s: string // Stream URL
-  ac?: string // Action (default: subscribe)
-  t?: string // Title
+  /** Feed URL or stream ID to subscribe to */
+  quickadd: string
 }
 
 export interface EditSubscriptionParams {
   s: string // Stream ID
-  ac: 'subscribe' | 'unsubscribe' | 'edit'
+  /** Action to perform: 'follow' to subscribe, 'unfollow' to unsubscribe, 'edit' to update title/tags */
+  ac: 'follow' | 'unfollow' | 'edit'
   t?: string // Title
   a?: string // Add tag
   r?: string // Remove tag
