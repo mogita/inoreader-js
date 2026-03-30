@@ -102,6 +102,108 @@ describe('InoreaderClient with mock authentication', () => {
       expect(typeof client.getStreamContents).toBe('function')
     })
   })
+
+  describe('getStreamItemIds', () => {
+    it('should include output=json in request URL by default', async () => {
+      let capturedUrl: string | undefined
+      const originalFetch = globalThis.fetch
+      globalThis.fetch = async (input: RequestInfo | URL, _init?: RequestInit) => {
+        capturedUrl = input.toString()
+        return new Response(JSON.stringify({ itemRefs: [] }), { status: 200 })
+      }
+
+      try {
+        await client.getStreamItemIds('user/-/state/com.google/reading-list')
+      } finally {
+        globalThis.fetch = originalFetch
+      }
+
+      expect(capturedUrl).toBeDefined()
+      expect(capturedUrl).toContain('output=json')
+    })
+
+    it('should enforce output=json even if caller tries to override', async () => {
+      let capturedUrl: string | undefined
+      const originalFetch = globalThis.fetch
+      globalThis.fetch = async (input: RequestInfo | URL, _init?: RequestInit) => {
+        capturedUrl = input.toString()
+        return new Response(JSON.stringify({ itemRefs: [] }), { status: 200 })
+      }
+
+      try {
+        await client.getStreamItemIds('user/-/state/com.google/reading-list', { output: 'xml' as any })
+      } finally {
+        globalThis.fetch = originalFetch
+      }
+
+      expect(capturedUrl).toBeDefined()
+      expect(capturedUrl).toContain('output=json')
+      expect(capturedUrl).not.toContain('output=xml')
+    })
+  })
+})
+
+describe('makeRequest routing', () => {
+  let client: InoreaderClient
+  let capturedRequests: Array<{ url: string; init: RequestInit }>
+
+  let originalFetch: typeof globalThis.fetch
+
+  beforeEach(() => {
+    capturedRequests = []
+    originalFetch = globalThis.fetch
+    client = new InoreaderClient({
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+      baseUrl: 'https://www.inoreader.com',
+    })
+    client.setCredentials({
+      accessToken: 'mock-access-token',
+      expiresAt: Date.now() + 3600000,
+    })
+
+    ;(globalThis as any).fetch = async (input: string | URL | Request, init?: RequestInit) => {
+      capturedRequests.push({ url: input.toString(), init: init ?? {} })
+      return new Response(JSON.stringify({ userId: 'u1', userName: 'test', userProfileId: 'p1', userEmail: 'test@example.com', isBloggerUser: false, signupTimeSec: 0, isMultiLoginEnabled: false }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    }
+  })
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch
+  })
+
+  it('GET appends params to URL and sends no body', async () => {
+    await client.getStreamContents('user/-/state/com.google/reading-list', { n: 10, r: 'o' })
+    expect(capturedRequests).toHaveLength(1)
+    const req = capturedRequests[0]!
+    expect(req.url).toContain('n=10')
+    expect(req.url).toContain('r=o')
+    expect(req.init.body).toBeUndefined()
+  })
+
+  it('POST sends params as URL-encoded body and no query string', async () => {
+    await client.deleteTag('user/-/label/test')
+    expect(capturedRequests).toHaveLength(1)
+    const req = capturedRequests[0]!
+    const url = new URL(req.url)
+    expect(url.search).toBe('')
+    expect(req.init.body).toBe('s=user%2F-%2Flabel%2Ftest')
+  })
+
+  it('POST with array param encodes all values in body', async () => {
+    await client.editTag({ i: ['item1', 'item2'], a: 'user/-/state/com.google/starred' })
+    expect(capturedRequests).toHaveLength(1)
+    const req = capturedRequests[0]!
+    const url = new URL(req.url)
+    expect(url.search).toBe('')
+    const body = req.init.body as string
+    const parsed = new URLSearchParams(body)
+    expect(parsed.getAll('i')).toEqual(['item1', 'item2'])
+    expect(parsed.get('a')).toBe('user/-/state/com.google/starred')
+  })
 })
 
 describe('getStreamItemIds URL format', () => {
