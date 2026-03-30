@@ -51,6 +51,7 @@ export type {
   EditSubscriptionParams,
   EditTagParams,
   MarkAllAsReadParams,
+  GetTagsParams,
   InoreaderError as InoreaderErrorType,
 } from './types'
 

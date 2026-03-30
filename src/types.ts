@@ -88,6 +88,13 @@ export interface Tag {
   id: string
   sortid: string
   type?: string
+  unread_count?: number
+  unseen_count?: number
+}
+
+export interface GetTagsParams {
+  types?: 0 | 1
+  counts?: 0 | 1
 }
 
 export interface TagList {
