@@ -212,7 +212,9 @@ export class InoreaderAuth {
         throw new AuthenticationError('No auth token found in ClientLogin response')
       }
 
-      return authMatch[1]
+      const token = authMatch[1].trim()
+      this.credentials = { accessToken: token, authType: 'googlelogin' }
+      return token
     } catch (error) {
       if (error instanceof AuthenticationError) {
         throw error
@@ -248,6 +250,9 @@ export class InoreaderAuth {
   getAuthorizationHeader(): string | null {
     if (!this.credentials.accessToken) {
       return null
+    }
+    if (this.credentials.authType === 'googlelogin') {
+      return `GoogleLogin auth=${this.credentials.accessToken}`
     }
     return `Bearer ${this.credentials.accessToken}`
   }

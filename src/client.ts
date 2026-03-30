@@ -8,11 +8,13 @@ import type {
   StreamContents,
   UnreadCount,
   PreferenceList,
+  StreamPreferenceList,
   StreamParams,
   AddSubscriptionParams,
   EditSubscriptionParams,
   EditTagParams,
   MarkAllAsReadParams,
+  GetTagsParams,
   RateLimitInfo,
 } from './types'
 import { InoreaderAuth } from './auth'
@@ -148,8 +150,8 @@ export class InoreaderClient {
   /**
    * Get tag list
    */
-  async getTags(): Promise<TagList> {
-    return this.makeRequest<TagList>('/reader/api/0/tag/list')
+  async getTags(params?: GetTagsParams): Promise<TagList> {
+    return this.makeRequest<TagList>('/reader/api/0/tag/list', 'GET', params)
   }
 
   /**
@@ -172,9 +174,11 @@ export class InoreaderClient {
    * Get stream item IDs
    */
   async getStreamItemIds(streamId: string, params?: StreamParams): Promise<{ itemRefs: Array<{ id: string }> }> {
-    const encodedStreamId = encodeStreamId(streamId)
-    const url = `/reader/api/0/stream/items/ids/${encodedStreamId}`
-    return this.makeRequest<{ itemRefs: Array<{ id: string }> }>(url, 'GET', params)
+    return this.makeRequest<{ itemRefs: Array<{ id: string }> }>('/reader/api/0/stream/items/ids', 'GET', {
+      ...params,
+      s: streamId,
+      output: 'json' as const,
+    })
   }
 
   /**
@@ -187,10 +191,10 @@ export class InoreaderClient {
   /**
    * Get stream preferences
    */
-  async getStreamPreferences(streamId: string): Promise<PreferenceList> {
+  async getStreamPreferences(streamId: string): Promise<StreamPreferenceList> {
     const encodedStreamId = encodeStreamId(streamId)
     const url = `/reader/api/0/preference/stream/list/${encodedStreamId}`
-    return this.makeRequest<PreferenceList>(url)
+    return this.makeRequest<StreamPreferenceList>(url)
   }
 
   /**
@@ -280,7 +284,13 @@ export class InoreaderClient {
       headers[key] = value
     }
 
-    url = buildUrl(this.config.baseUrl!, path, params)
+    let body: string | undefined
+    if (method === 'POST') {
+      url = buildUrl(this.config.baseUrl!, path)
+      body = encodeFormData(params ?? {})
+    } else {
+      url = buildUrl(this.config.baseUrl!, path, params)
+    }
 
     if (this.debug) {
       console.log(`[debug] ${method}: ${url}`)
@@ -288,7 +298,7 @@ export class InoreaderClient {
     }
 
     try {
-      const response = await fetch(url, { method, headers })
+      const response = await fetch(url, { method, headers, body })
 
       // Extract rate limit information
       this.lastRateLimitInfo = extractRateLimitInfo(response.headers)

@@ -58,6 +58,20 @@ describe('Utils', () => {
       expect(queryString).not.toContain('b=')
       expect(queryString).not.toContain('c=')
     })
+
+    it('should coerce boolean values to string', () => {
+      const queryString = buildQueryString({ enabled: true, disabled: false })
+      expect(queryString).toContain('enabled=true')
+      expect(queryString).toContain('disabled=false')
+    })
+
+    it('should coerce array values to a single comma-joined entry, not repeated keys', () => {
+      const queryString = buildQueryString({ ids: ['1', '2', '3'] })
+      // buildQueryString uses String(value), producing one key — use buildUrl for repeated keys
+      const keyCount = (queryString.match(/ids=/g) || []).length
+      expect(keyCount).toBe(1)
+      expect(queryString).toContain('ids=')
+    })
   })
 
   describe('buildUrl', () => {
