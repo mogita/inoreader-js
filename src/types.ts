@@ -161,7 +161,8 @@ export interface Annotation {
 
 // Unread count types
 export interface UnreadCount {
-  max: number
+  /** The API returns max as a string (e.g. "1000"). Display code should append '+' when a `count` is greater than or equal to the numeric value of `max`. */
+  max: string
   unreadcounts: Array<{
     id: string
     count: number
