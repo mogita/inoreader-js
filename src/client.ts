@@ -8,6 +8,7 @@ import type {
   StreamContents,
   UnreadCount,
   PreferenceList,
+  StreamPreferenceList,
   StreamParams,
   AddSubscriptionParams,
   EditSubscriptionParams,
@@ -187,10 +188,10 @@ export class InoreaderClient {
   /**
    * Get stream preferences
    */
-  async getStreamPreferences(streamId: string): Promise<PreferenceList> {
+  async getStreamPreferences(streamId: string): Promise<StreamPreferenceList> {
     const encodedStreamId = encodeStreamId(streamId)
     const url = `/reader/api/0/preference/stream/list/${encodedStreamId}`
-    return this.makeRequest<PreferenceList>(url)
+    return this.makeRequest<StreamPreferenceList>(url)
   }
 
   /**
@@ -276,7 +277,13 @@ export class InoreaderClient {
       headers[key] = value
     }
 
-    url = buildUrl(this.config.baseUrl!, path, params)
+    let body: string | undefined
+    if (method === 'POST') {
+      url = buildUrl(this.config.baseUrl!, path)
+      body = encodeFormData(params ?? {})
+    } else {
+      url = buildUrl(this.config.baseUrl!, path, params)
+    }
 
     if (this.debug) {
       console.log(`[debug] ${method}: ${url}`)
@@ -284,7 +291,7 @@ export class InoreaderClient {
     }
 
     try {
-      const response = await fetch(url, { method, headers })
+      const response = await fetch(url, { method, headers, body })
 
       // Extract rate limit information
       this.lastRateLimitInfo = extractRateLimitInfo(response.headers)
