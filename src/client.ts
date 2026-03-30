@@ -288,9 +288,6 @@ export class InoreaderClient {
     if (this.debug) {
       console.log(`[debug] ${method}: ${url}`)
       console.log('[debug] headers:', headers)
-      if (method === 'POST') {
-        console.log('[debug] body:', body)
-      }
     }
 
     try {
