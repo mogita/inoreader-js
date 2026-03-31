@@ -160,9 +160,20 @@ export interface Annotation {
 }
 
 // Unread count types
-export interface UnreadCount {
-  /** The API returns max as a string (e.g. "1000"). Display code should append '+' when a `count` is greater than or equal to the numeric value of `max`. */
+
+/** Raw API response shape where max is a string */
+export interface UnreadCountResponse {
   max: string
+  unreadcounts: Array<{
+    id: string
+    count: number
+    newestItemTimestampUsec: string
+  }>
+}
+
+export interface UnreadCount {
+  /** Maximum counter value for the current user (varies by tier: Free, Pro, etc.). The API returns this as a string; the SDK parses it to a number (defaults to 1000 if invalid). When a `count` reaches this value, display it with a '+' suffix (e.g. show "1000+"). */
+  max: number
   unreadcounts: Array<{
     id: string
     count: number
@@ -173,7 +184,8 @@ export interface UnreadCount {
 // Stream parameters
 export interface StreamParams {
   n?: number // Number of items (default 20, max 100)
-  r?: 'o' // Sort order: 'o' for oldest-first; omit for newest-first (default)
+  /** Sort order: pass `'o'` for oldest-first; omit for newest-first (default) */
+  r?: 'o'
   ot?: number // Start time (unix timestamp)
   xt?: string // Exclude target
   it?: string // Include target

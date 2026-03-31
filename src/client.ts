@@ -7,6 +7,7 @@ import type {
   TagList,
   StreamContents,
   UnreadCount,
+  UnreadCountResponse,
   PreferenceList,
   StreamPreferenceList,
   StreamParams,
@@ -158,7 +159,9 @@ export class InoreaderClient {
    * Get unread counts
    */
   async getUnreadCounts(): Promise<UnreadCount> {
-    return this.makeRequest<UnreadCount>('/reader/api/0/unread-count')
+    const data = await this.makeRequest<UnreadCountResponse>('/reader/api/0/unread-count')
+    const parsed = Number(data.max)
+    return { ...data, max: Number.isFinite(parsed) ? parsed : 1000 }
   }
 
   /**
