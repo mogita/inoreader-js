@@ -101,7 +101,10 @@ quickStartExample().catch(console.error)
 For legacy applications, you can use ClientLogin:
 
 ```typescript
-const client = new InoreaderClient()
+const client = new InoreaderClient({
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+})
 
 await client.clientLogin({
   email: 'your-email@example.com',
@@ -112,8 +115,6 @@ const userInfo = await client.getUserInfo()
 ```
 
 ## Error Handling
-
-InoreaderJS
 
 ```typescript
 import { AuthenticationError, RateLimitError } from 'inoreader-js'
