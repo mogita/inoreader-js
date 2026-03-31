@@ -304,6 +304,20 @@ describe('Authorization header behavior', () => {
     expect(capturedHeaders?.has('Authorization')).toBe(true)
     expect(capturedHeaders?.get('Authorization')).toBe('Bearer mock-access-token')
   })
+
+  it('should use GoogleLogin auth= header after clientLogin', async () => {
+    const client = new InoreaderClient({
+      clientId: 'test-client-id',
+      clientSecret: 'test-client-secret',
+    })
+    client.setCredentials({
+      accessToken: 'mock-clientlogin-token',
+      authType: 'googlelogin',
+    })
+    await client.getUserInfo()
+    expect(capturedHeaders?.has('Authorization')).toBe(true)
+    expect(capturedHeaders?.get('Authorization')).toBe('GoogleLogin auth=mock-clientlogin-token')
+  })
 })
 
 describe('stream preference URL format', () => {

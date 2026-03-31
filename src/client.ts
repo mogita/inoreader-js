@@ -76,8 +76,7 @@ export class InoreaderClient {
    * Authenticate using ClientLogin (legacy)
    */
   async clientLogin(credentials: ClientLoginCredentials): Promise<void> {
-    const authToken = await this.auth.clientLogin(credentials)
-    this.auth.setCredentials({ accessToken: authToken, authType: 'googlelogin' })
+    await this.auth.clientLogin(credentials)
   }
 
   /**
