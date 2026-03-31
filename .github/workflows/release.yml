@@ -75,9 +75,13 @@ jobs:
           git fetch --tags origin
           TAG="${{ steps.version.outputs.version }}"
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
-            echo "Tag $TAG already exists locally, skipping."
-          elif git ls-remote --tags origin "$TAG" | grep -q "refs/tags/$TAG"; then
-            echo "Tag $TAG already exists on origin, skipping."
+            EXISTING=$(git rev-parse "refs/tags/$TAG")
+            CURRENT=$(git rev-parse HEAD)
+            if [ "$EXISTING" != "$CURRENT" ]; then
+              echo "::error::Tag $TAG exists but points to $EXISTING, not current HEAD $CURRENT"
+              exit 1
+            fi
+            echo "Tag $TAG already exists and points to HEAD, skipping."
           else
             git tag "$TAG"
             git push origin "$TAG"
