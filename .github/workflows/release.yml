@@ -55,7 +55,7 @@ jobs:
           echo "Package will include these files:"
           npm pack --dry-run
 
-      - name: Sync src/version.ts with package version
+      - name: Sync src/version.ts with release branch version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           SEMVER="${VERSION#v}"
@@ -63,6 +63,8 @@ jobs:
 
       - name: Commit if changed, then tag
         run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          SEMVER="${VERSION#v}"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/version.ts
@@ -70,8 +72,20 @@ jobs:
             git commit -m "chore: sync version.ts to $SEMVER"
             git push origin main
           fi
-          git tag "${{ steps.version.outputs.version }}"
-          git push origin "${{ steps.version.outputs.version }}"
+          git fetch --tags origin
+          TAG="${{ steps.version.outputs.version }}"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            EXISTING=$(git rev-parse "refs/tags/$TAG")
+            CURRENT=$(git rev-parse HEAD)
+            if [ "$EXISTING" != "$CURRENT" ]; then
+              echo "::error::Tag $TAG exists but points to $EXISTING, not current HEAD $CURRENT"
+              exit 1
+            fi
+            echo "Tag $TAG already exists and points to HEAD, skipping."
+          else
+            git tag "$TAG"
+            git push origin "$TAG"
+          fi
 
       - name: Publish to npm
         run: npm publish --provenance --access public
