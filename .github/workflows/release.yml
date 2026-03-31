@@ -128,7 +128,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Delete release branch
-        if: github.event_name != 'workflow_dispatch'
-        run: |
-          git push origin --delete "${{ github.event.pull_request.head.ref }}"

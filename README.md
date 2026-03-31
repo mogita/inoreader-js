@@ -32,6 +32,8 @@ bun add inoreader-js
 
 For all historical releases, see [Releases](https://github.com/mogita/inoreader-js/releases).
 
+> **Upgrading from v1?** See the [Migration Guide](MIGRATION.md) for breaking changes.
+
 ## Quick Start
 
 First, register your app at the [Inoreader Developer Console](https://www.inoreader.com/developers/register-app) to get your client credentials.
