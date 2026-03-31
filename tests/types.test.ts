@@ -112,9 +112,9 @@ describe('GetTagsParams interface', () => {
 })
 
 describe('UnreadCount', () => {
-  it('should accept a string for max', () => {
+  it('should accept a number for max', () => {
     const count: UnreadCount = {
-      max: '1000',
+      max: 1000,
       unreadcounts: [
         {
           id: 'user/-/state/com.google/reading-list',
@@ -123,7 +123,7 @@ describe('UnreadCount', () => {
         },
       ],
     }
-    expect(count.max).toBe('1000')
-    expect(typeof count.max).toBe('string')
+    expect(count.max).toBe(1000)
+    expect(typeof count.max).toBe('number')
   })
 })

@@ -69,17 +69,3 @@ const { n, r } = STREAM_PARAMS.LATEST // { n: 20, r: 'n' }
 // v2
 const { n } = STREAM_PARAMS.LATEST // { n: 20 }
 ```
-
-## 5. `UnreadCount.max`: type changed from `number` to `string`
-
-The Inoreader API returns `max` as a string (e.g. `"1000"`). The type now reflects the actual API response.
-
-```ts
-// v1
-const unread: UnreadCount = await client.getUnreadCount()
-if (count >= unread.max) { /* ... */ }
-
-// v2
-const unread: UnreadCount = await client.getUnreadCount()
-if (count >= Number(unread.max)) { /* ... */ }
-```
