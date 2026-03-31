@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '[Dry run] Version to simulate (e.g. v2.0.0). Will NOT publish, tag, or create a release.'
+        description: '[Dry run] Version to simulate (e.g. 2.0.0). Will NOT publish, tag, or create a release.'
         required: true
         type: string
 
@@ -71,11 +71,12 @@ jobs:
           echo "Package will include these files:"
           npm pack --dry-run
 
-      - name: Sync src/version.ts with release branch version
+      - name: Sync version to release target
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           SEMVER="${VERSION#v}"
           echo "export const VERSION = '$SEMVER'" > src/version.ts
+          npm version "$SEMVER" --no-git-tag-version --allow-same-version
 
       - name: Commit if changed, then tag
         if: github.event_name != 'workflow_dispatch'
