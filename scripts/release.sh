@@ -56,8 +56,11 @@ RELEASE_BRANCH="release/v$NEW_VERSION"
 echo "🌿 Creating release branch: $RELEASE_BRANCH"
 git checkout -b "$RELEASE_BRANCH"
 
+# Sync src/version.ts
+echo "export const VERSION = '$NEW_VERSION'" > src/version.ts
+
 # Commit version bump
-git add package.json
+git add package.json bun.lock src/version.ts
 git commit -m "chore: bump version to $NEW_VERSION"
 
 # Push release branch
