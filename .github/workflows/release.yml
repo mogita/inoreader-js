@@ -39,7 +39,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install npm for OIDC trusted publishing support
+        run: npm install -g npm@11.12.1
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
