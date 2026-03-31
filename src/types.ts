@@ -184,7 +184,8 @@ export interface UnreadCount {
 // Stream parameters
 export interface StreamParams {
   n?: number // Number of items (default 20, max 100)
-  r?: 'o' // Sort order: 'o' for oldest-first; omit for newest-first (default)
+  /** Sort order: pass `'o'` for oldest-first; omit for newest-first (default) */
+  r?: 'o'
   ot?: number // Start time (unix timestamp)
   xt?: string // Exclude target
   it?: string // Include target

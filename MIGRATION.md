@@ -58,14 +58,16 @@ const prefs: Record<string, Preference[]> = result.streamprefs
 const streamPrefs: Preference[] = result.streamprefs[streamId]
 ```
 
-## 4. `STREAM_PARAMS.LATEST`: `r` property removed
+## 4. `STREAM_PARAMS.LATEST`: `r: 'n'` removed
 
-The `r: 'n'` property was removed from `STREAM_PARAMS.LATEST` because the Inoreader API does not support this parameter. If you were referencing `STREAM_PARAMS.LATEST.r`, remove that usage.
+The `r: 'n'` value was removed from `STREAM_PARAMS.LATEST` because `'n'` is not a valid API value. Per the Inoreader API, `r` is optional: omit it for newest-first (the default), or pass `'o'` for oldest-first. If you were referencing `STREAM_PARAMS.LATEST.r`, remove that usage. Use `STREAM_PARAMS.OLDEST` (which sets `r: 'o'`) when you need oldest-first ordering.
 
 ```ts
 // v1
 const { n, r } = STREAM_PARAMS.LATEST // { n: 20, r: 'n' }
 
 // v2
-const { n } = STREAM_PARAMS.LATEST // { n: 20 }
+const { n } = STREAM_PARAMS.LATEST    // { n: 20 } — newest-first by default
+// For oldest-first:
+STREAM_PARAMS.OLDEST                   // { r: 'o', n: 20 }
 ```
