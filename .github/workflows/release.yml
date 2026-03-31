@@ -4,13 +4,20 @@ on:
   pull_request:
     types: [closed]
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '[Dry run] Version to simulate (e.g. v2.0.0). Will NOT publish, tag, or create a release.'
+        required: true
+        type: string
 
 jobs:
   release:
     if: >-
-      github.event.pull_request.merged == true &&
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
       startsWith(github.event.pull_request.head.ref, 'release/') &&
-      github.event.pull_request.head.repo.full_name == github.repository
+      github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required for creating GitHub releases
@@ -20,13 +27,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref || 'main' }}
 
-      - name: Extract version from branch name
+      - name: Extract version
         id: version
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          VERSION=${BRANCH_NAME#release/}
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+            VERSION=${BRANCH_NAME#release/}
+          fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Extracted version: $VERSION"
 
@@ -67,6 +78,7 @@ jobs:
           echo "export const VERSION = '$SEMVER'" > src/version.ts
 
       - name: Commit if changed, then tag
+        if: github.event_name != 'workflow_dispatch'
         run: |
           VERSION="${{ steps.version.outputs.version }}"
           SEMVER="${VERSION#v}"
@@ -93,9 +105,10 @@ jobs:
           fi
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: npm publish ${{ github.event_name == 'workflow_dispatch' && '--dry-run' || '--provenance' }} --access public
 
       - name: Create GitHub Release
+        if: github.event_name != 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
@@ -115,5 +128,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete release branch
+        if: github.event_name != 'workflow_dispatch'
         run: |
           git push origin --delete "${{ github.event.pull_request.head.ref }}"
