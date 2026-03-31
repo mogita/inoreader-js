@@ -55,21 +55,21 @@ jobs:
           echo "Package will include these files:"
           npm pack --dry-run
 
-      - name: Bump version in package.json and src/version.ts
+      - name: Sync src/version.ts with package version
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          # Strip leading v if present (e.g. v2.0.0 -> 2.0.0)
           SEMVER="${VERSION#v}"
-          npm version "$SEMVER" --no-git-tag-version
           echo "export const VERSION = '$SEMVER'" > src/version.ts
 
-      - name: Commit version bump and create tag
+      - name: Commit if changed, then tag
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package.json bun.lock src/version.ts
-          git commit -m "chore: bump version to ${{ steps.version.outputs.version }}"
-          git push origin main
+          git add src/version.ts
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: sync version.ts to $SEMVER"
+            git push origin main
+          fi
           git tag "${{ steps.version.outputs.version }}"
           git push origin "${{ steps.version.outputs.version }}"
 
