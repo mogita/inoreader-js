@@ -6,7 +6,7 @@
       "name": "inoreader-js",
       "devDependencies": {
         "@types/bun": "latest",
-        "prettier": "^3.8.1",
+        "prettier": "3.8.1",
         "typescript": "^5",
       },
     },
