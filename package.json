@@ -52,9 +52,10 @@
   ],
   "devDependencies": {
     "@types/bun": "latest",
+    "prettier": "^3.8.1",
     "typescript": "^5"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   }
 }
